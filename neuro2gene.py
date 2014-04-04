@@ -27,8 +27,8 @@ import pickle
 
 def neurosynthInit():
     print "Initializing Neurosynth database..."
-    dataset = Dataset('data/database.txt')
-    dataset.add_features('data/features.txt')    
+    dataset = Dataset('data/3000terms/database.txt')
+    dataset.add_features('data/3000terms/features.txt')    
 
     #print "Loading standard space brain..."
     #img = nb.load("data/MNI152_T1_2mm_brain.nii.gz")
@@ -90,7 +90,7 @@ def getSimilarity(features,thresh,dataset,outdir=None):
         sims[i,j] = np.divide(overlap,(total - overlap))
      
     # Print similarity matrix to file
-    np.savetxt('featureSimMatrix.dat', sims, fmt='%.18e', delimiter=',', newline='\n', header=",".join(features))
+    np.savetxt('featureSimMatrix525.dat', sims, fmt='%.18e', delimiter=',', newline='\n', header=",".join(features))
     # How to read in data file
     #np.loadtxt('featureSimMatrix.dat', comments='#', delimiter=',')
     return sims
