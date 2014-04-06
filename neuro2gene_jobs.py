@@ -25,5 +25,6 @@ for f in features:
   jobfile.writelines("#SBATCH --time=2-00:00\n") 
   jobfile.writelines("#SBATCH --mem=12000\n")
   jobfile.writelines("#SBATCH --mail-user=vsochat@stanford.edu\n")   
-  jobfile.writelines("/home/vsochat/venv-python/bin/python /home/vsochat/SCRIPT/python/neuro2gene/neuro2gene.py " + f + " " + threshold + " " + analysisTime + "\n")  
+  jobfile.writelines("/home/vsochat/venv-python/bin/python /home/vsochat/SCRIPT/python/neuro2gene/run_neuro2gene_cluster.py " + f + " " + str(THRESHOLD) + " " + analysisTime + "\n")  
+  jobfile.close()
 
