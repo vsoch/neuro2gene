@@ -41,10 +41,10 @@ def neurosynthQuery(searchTerm,thresh,dataset,outdir=None):
     # This gets the absolute value FDR corrected at threshold
     data = ma.images[ma.images.keys()[4]]
     # Print this image to file, to look at later
-    if not outdir:
-      imageutils.save_img(data, '%s.nii.gz' % (searchTerm), dataset.volume)
-    else:
-      imageutils.save_img(data, '%s/%s.nii.gz' % (outdir, searchTerm), dataset.volume)
+    #if not outdir:
+    #  imageutils.save_img(data, '%s.nii.gz' % (searchTerm), dataset.volume)
+    #else:
+    #  imageutils.save_img(data, '%s/%s.nii.gz' % (outdir, searchTerm), dataset.volume)
     img = dataset.volume.unmask(data)
     # These are x,y,z coordinates of nonnzero voxels    
     idx = np.nonzero(img)

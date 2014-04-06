@@ -27,13 +27,15 @@ neuro2gene.printSampleMatches(keepers,SEARCH_TERM,analysisTime,colnames)
 import neuro2gene
 dataset = neuro2gene.neurosynthInit()
 features = neuro2gene.getFeatures(dataset)
-THRESHOLD = 0.001
+THRESHOLD = 0.05
 sids,xyz,colnames,aba = neuro2gene.loadABA()
 
-for i in range(0,len(features)):
+#len(features)
+
+for i in range(0,100):
   f = features[i]
   print "Saving sample subset for " + f + "..."
   coords = neuro2gene.neurosynthQuery(f,THRESHOLD,dataset)
   # Read in data file to get specimen IDs and structures to query
   keepers,colnames = neuro2gene.ReadAllenBrainSample(coords,sids,xyz,colnames,aba)
-  neuro2gene.printSampleMatches(keepers,f,'_4-4-2014',colnames)
+  neuro2gene.printSampleMatches(keepers,f,'_4-5-2014',colnames)
