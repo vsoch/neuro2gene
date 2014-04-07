@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/home/vanessa/venv-python/bin/python
 
 import sys
 import neuro2gene
@@ -12,11 +12,11 @@ sids,xyz,colnames,aba = neuro2gene.loadABA()
 
 print "Starting analysis for term " + SEARCH_TERM
 # First query neurosynth for relevant activation
-dataset = neuro2gene.neurosynthInit()
+#dataset = neuro2gene.neurosynthInit()
 # Return MNI coordinates where there is FDR corrected, significant activation
 coords = neuro2gene.neurosynthQuery(SEARCH_TERM,THRESHOLD,dataset)
 # Read in data file to get specimen IDs and structures to query
 keepers,colnames = neuro2gene.ReadAllenBrainSample(coords)
 # Get the analysis time for all output files   
 # Print table to file of matches
-neuro2gene.printSampleMatches(keepers,f,analysisTime,colnames)
+neuro2gene.printSampleMatches(keepers,SEARCH_TERM,analysisTime,colnames)
