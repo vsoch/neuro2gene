@@ -36,6 +36,7 @@ def neurosynthInit():
     return dataset
 
 def neurosynthQuery(searchTerm,thresh,dataset,outdir=None):
+    thresh = float(thresh)
     query = dataset.get_ids_by_features('*' + searchTerm + '*',threshold=thresh)
     ma = meta.MetaAnalysis(dataset,query)
     # This gets the absolute value FDR corrected at threshold
