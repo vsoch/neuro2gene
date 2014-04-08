@@ -13,7 +13,6 @@ sids,xyz,colnames,aba = neuro2gene.loadABA()
 print "Starting analysis for term " + SEARCH_TERM
 # First query neurosynth for relevant activation
 #dataset = neuro2gene.neurosynthInit()
->>>>>>> aa25dac2d3dcd68c9015fc7aaea7c95b3f425ec6
 # Return MNI coordinates where there is FDR corrected, significant activation
 coords = neuro2gene.neurosynthQuery(SEARCH_TERM,THRESHOLD,dataset)
 # Read in data file to get specimen IDs and structures to query
