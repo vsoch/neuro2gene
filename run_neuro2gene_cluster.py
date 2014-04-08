@@ -1,4 +1,4 @@
-#!/home/vanessa/venv-python/bin/python
+#!/home/vanessa/python-lapack-blas/bin/python
 
 import sys
 import neuro2gene
