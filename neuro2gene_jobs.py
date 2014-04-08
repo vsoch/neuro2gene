@@ -24,7 +24,7 @@ for f in features:
   jobfile.writelines("#SBATCH --error=.out/"+ f + "_genes.err\n") 
   jobfile.writelines("#SBATCH --time=2-00:00\n") 
   jobfile.writelines("#SBATCH --mem=12000\n")
-  jobfile.writelines("source /home/vsochat/venv-python/activate\n")   
-  jobfile.writelines("/home/vsochat/venv-python/bin/python /home/vsochat/SCRIPT/python/neuro2gene/run_neuro2gene_cluster.py " + f + " " + str(THRESHOLD) + " " + analysisTime + "\n")  
+  jobfile.writelines("source /home/vsochat/python-lapack-blas/activate\n")   
+  jobfile.writelines("/home/vsochat/python-lapack-blas/bin/python /home/vsochat/SCRIPT/python/neuro2gene/run_neuro2gene_cluster.py " + f + " " + str(THRESHOLD) + " " + analysisTime + "\n")  
   jobfile.close()
 
