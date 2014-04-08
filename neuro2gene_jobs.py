@@ -24,16 +24,12 @@ for f in features:
   jobfile.writelines("#SBATCH --error=.out/"+ f + "_genes.err\n") 
   jobfile.writelines("#SBATCH --time=2-00:00\n") 
   jobfile.writelines("#SBATCH --mem=12000\n")
-<<<<<<< HEAD
   jobfile.writelines("source /home/vsochat/python-lapack-blas/bin/activate\n")   
-=======
-  jobfile.writelines("source /home/vsochat/python-lapack-blas/activate\n")   
->>>>>>> 2d0c8b2fad1b56cb18f9e8a8ae6612347a98c469
   jobfile.writelines("/home/vsochat/python-lapack-blas/bin/python /home/vsochat/SCRIPT/python/neuro2gene/run_neuro2gene_cluster.py " + f + " " + str(THRESHOLD) + " " + analysisTime + "\n")  
   jobfile.close()
 
 # submit jobs
-for i in range(512,512+512):
+for i in range(1025,1025+512):
   f = features[i]
   os.system('sbatch .jobs/'+ f + ".job")
 
