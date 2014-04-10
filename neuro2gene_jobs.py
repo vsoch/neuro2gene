@@ -7,7 +7,7 @@ import neuro2gene
 import os
 
 THRESHOLD = 0.001
-analysisTime = '4-8-2014'
+analysisTime = '4-9-2014'
 
 # Read in features from dataset
 dataset = neuro2gene.neurosynthInit()
@@ -29,7 +29,7 @@ for f in features:
   jobfile.close()
 
 # submit jobs
-for i in range(1025,1025+512):
+for i in range(2050,2050+512):
   f = features[i]
   os.system('sbatch .jobs/'+ f + ".job")
 
