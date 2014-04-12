@@ -4,19 +4,14 @@
 
 # Get list of .tab files in the directory
 files = list.files(path = "/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/output/", pattern = "*.tab")
-# Read in unique IDs for terms
-uids = read.csv('/home/vsochat/SCRIPT/python/neuro2gene/data/featureUID.txt',sep=',',head=FALSE)
 # Read in all files, and save UIDS and distances for
 suids = read.csv('/home/vsochat/SCRIPT/python/neuro2gene/data/sampleUID.txt',sep=',',head=FALSE)
 
-# We want to keep track of term, term UID, sample ID, and distance
-tmatrix = matrix(0,dim(uids)[1],dim(suids)[1])
-rownames(tmatrix) = uids[,1]
-colnames(tmatrix) = suids[,1]
-
 # HERE IS CODE TO MANUALLY ADD SAMPLE IDS TO TERM FILES with NO THRESHOLDING, AND ALSO WITH THRESHOLDING
 for (f in 1:length(files)) {
-  file = file[f]
+  
+  cat("Processing file",files[f],"of",length(files),"\n")
+  file = files[f]
   
   # Find the term
   termid = strsplit(file,"_")[[1]][1]
