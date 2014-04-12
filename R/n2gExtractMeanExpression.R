@@ -23,6 +23,7 @@ genenames = unique(genenames)
 matrixMeans = array(data=0,dim=c(length(files),length(genenames)))
 matrixSums = array(data=0,dim=c(length(files),length(genenames)))
 ngenes = c()
+nsamps = c()
 
 # Add row and column names
 rownames(matrixMeans) = rownames(matrixSums) = files
@@ -33,17 +34,20 @@ colnames(matrixMeans) = colnames(matrixSums) = genenames
 for (f in 1:length(files)){
   load(paste(datadir,"/",files[f],sep=""))
   numgenes = dim(mat)[2]
+  numsamps = dim(mat)[1]
   ngenes = c(ngenes,numgenes)
+  nsamps = c(nsamps,numsamps)
   matrixMeans[files[f],colnames(mat)] = colSums(mat) / numgenes
   matrixSums[files[f],colnames(mat)] = colSums(mat)
 }
 
 ngenes = as.data.frame(ngenes)
-
+nsamps = as.data.frame(nsamps)
 # Now save to output file
 write.table(matrixMeans, file = paste("/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/sigresult/termMatrixMeans_n4.csv"), append = FALSE, quote = FALSE, row.names = TRUE, col.names = TRUE)
 write.table(matrixSums, file = paste("/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/sigresult/termMatrixSums_n4.csv"), append = FALSE, quote = FALSE, row.names = TRUE, col.names = TRUE)
 write.table(ngenes, file = paste("/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/sigresult/termNumGenes_n4.csv"), append = FALSE, quote = FALSE, row.names = TRUE, col.names = TRUE)
+write.table(nsamps, file = paste("/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/sigresult/termNumSamps_n4.csv"), append = FALSE, quote = FALSE, row.names = TRUE, col.names = TRUE)
 
 # Now calculate correlations for matrixMeans
 corMeans = cor(matrixMeans,method="pearson")

@@ -3,11 +3,11 @@
 # For each concept map, extract sample sets for specified distance (3mm)
 
 # Get list of .tab files in the directory
-files = list.files(path = "/home/vsochat/SCRIPT/python/neurosynth/output", pattern = "*.tab")
+files = list.files(path = "/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/output/", pattern = "*.tab")
 # Read in unique IDs for terms
-uids = read.csv('/home/vsochat/SCRIPT/python/neurosynth/data/featureUID.txt',sep=',',head=FALSE)
+uids = read.csv('/home/vsochat/SCRIPT/python/neuro2gene/data/featureUID.txt',sep=',',head=FALSE)
 # Read in all files, and save UIDS and distances for
-suids = read.csv('/home/vsochat/SCRIPT/python/neurosynth/data/sampleUID.txt',sep=',',head=FALSE)
+suids = read.csv('/home/vsochat/SCRIPT/python/neuro2gene/data/sampleUID.txt',sep=',',head=FALSE)
 
 # We want to keep track of term, term UID, sample ID, and distance
 tmatrix = matrix(0,dim(uids)[1],dim(suids)[1])
@@ -16,35 +16,33 @@ colnames(tmatrix) = suids[,1]
 
 # HERE IS CODE TO MANUALLY ADD SAMPLE IDS TO TERM FILES with NO THRESHOLDING, AND ALSO WITH THRESHOLDING
 for (f in 1:length(files)) {
-  file = read.csv(paste("/home/vsochat/SCRIPT/python/neurosynth/output/",files[f],sep=""),sep='\t',head=TRUE)
-  file = file[,1:18]
-
-  # Find the term UID
-  tidx = strsplit(strsplit(file,"__")[[1]][1],"/")
-  tidx = as.character(tidx[[1]][length(tidx[[1]])])
-  tidx = which(uids[,2]==tidx)
-  termid = uids[tidx,1]
-  termy = uids[tidx,2]
+  file = file[f]
+  
+  # Find the term
+  termid = strsplit(file,"_")[[1]][1]
   savepoints = c()
   sampids = c()
-
+  
+  # Read in the file
+  file = read.csv(paste("/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/output/",files[f],sep=""),sep='\t',head=TRUE)
+  file = file[,1:18]
+  
   for (s in 1:dim(file)[1]) {
     # Find the sample uid
-    samp = as.character(paste(f[s,1],f[s,2],f[s,3],f[s,4],f[s,5],f[s,6],f[s,8],f[s,9],f[s,10],f[s,11],f[s,12],f[s,13],f[s,14],sep="-"))
+    samp = as.character(paste(file[s,1],file[s,2],file[s,3],file[s,4],file[s,5],file[s,6],file[s,8],file[s,9],file[s,10],file[s,11],file[s,12],file[s,13],file[s,14],sep="-"))
     sidx = which(suids[,2] == samp)
     # Save to result
     sampy = as.character(suids[sidx,1])
     # If squared distance is <= 9 save point
-    savepoints = rbind(savepoints,f[s,])   
+    savepoints = rbind(savepoints,file[s,])   
     sampids = c(sampids,sampy)
   }
 
   rownames(savepoints) = sampids
-  write.table(savepoints, file = paste("/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/thresh/nothresh3000/",termid,"_",termy,".tab",sep=""), append = FALSE, quote = TRUE, sep = "\t",eol = "\n", na = "NA", dec = ".", row.names = TRUE, col.names = TRUE)
+  write.table(savepoints, file = paste("/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/thresh/nothresh3000/",termid,".tab",sep=""), append = FALSE, quote = TRUE, sep = "\t",eol = "\n", na = "NA", dec = ".", row.names = TRUE, col.names = TRUE)
 
   # Now threshold data, and save to different file
-  # VANESSA - NEED TO ADD THIS!
-  write.table(savepoints, file = paste("/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/thresh/9mmsq3000/",termid,"_",termy,".tab",sep=""), append = FALSE, quote = TRUE, sep = "\t",eol = "\n", na = "NA", dec = ".", row.names = TRUE, col.names = TRUE)
-  
+  savepoints = savepoints[which(savepoints$sq_distance <= 9),]
+  write.table(savepoints, file = paste("/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/thresh/9mmsq3000/",termid,".tab",sep=""), append = FALSE, quote = TRUE, sep = "\t",eol = "\n", na = "NA", dec = ".", row.names = TRUE, col.names = TRUE)  
 }
 

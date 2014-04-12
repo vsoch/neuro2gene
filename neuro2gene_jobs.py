@@ -29,9 +29,8 @@ for f in features:
   jobfile.close()
 
 # submit jobs
-for i in range(2050,2050+512):
+for i in range(2563,len(features)):
   f = features[i]
   os.system('sbatch .jobs/'+ f + ".job")
-
 
 
