@@ -19,7 +19,7 @@ for (f in 1:length(ups)) {
 for (f in 1:length(downs)) {
   file = paste(indir,"/",downs[f],sep="")
   load(file)
-  downlist = c(downlist,resultdown$probes)
+  downlist = c(downlist,list(resultdown$probes))
 }
 
 # NOW TANIMOTO SCORES
@@ -101,5 +101,34 @@ for (u in 1:length(alls)) {
 
 rownames(TSall) = alls
 colnames(TSall) = alls
-write.table(TSall,file="/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/tanimoto/all525.dat")
+write.table(TSall,file="/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/tanimoto/all525.csv")
 save(TSall,file="/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/tanimoto/all525.Rda")
+
+# Here we calculate the size of each set for each of up, down, and all, and print to file
+asize = c()
+for (s in 1:length(alls)){
+  asize = c(asize,length(alist[[s]]))
+}
+dsize = c()
+for (s in 1:length(downs)){
+  dsize = c(dsize,length(downlist[[s]]))
+}
+usize = c()
+for (s in 1:length(ups)){
+  usize = c(usize,length(uplist[[s]]))
+}
+
+# Covert to table
+asize = as.table(asize)
+dsize = as.table(dsize)
+usize = as.table(usize)
+
+# Add names of terms
+rownames(asize) = alls
+rownames(dsize) = downs
+rownames(usize) = ups
+
+# Save to file
+write.table(asize,file="/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/tanimoto/all_sizes_525.csv",quote=FALSE)
+write.table(usize,file="/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/tanimoto/up_sizes_525.csv",quote=FALSE)
+write.table(dsize,file="/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/tanimoto/down_sizes_525.csv",quote=FALSE)
