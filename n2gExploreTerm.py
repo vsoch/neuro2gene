@@ -21,13 +21,17 @@ if len([e for e in queryfeatures if e in '\n'.join(features)]) != len(queryfeatu
   print "Error: Please check that query features are in feature list!"
 
 word_dicts = list()
+raw_text = list()
 
 # For each feature, get the articles
 for f in queryfeatures:
-  word_dicts.append(neuro2gene.getWordCounts(dataset,f,THRESHOLD,email))
+  wd,rt = neuro2gene.getWordCounts(dataset,f,THRESHOLD,email) 
+  word_dicts.append(wd)
+  raw_text.append(rt)
 
-# Print to file
+# Print to file - both word dictionaries, and raw_text
 for wrd in range(0,len(word_dicts)):
+  # Word dictionaries
   w = word_dicts[wrd]
   keys = w.keys()
   vals = w.values()
@@ -36,5 +40,8 @@ for wrd in range(0,len(word_dicts)):
   for i in range(0,len(w)):
     filey.writelines(keys[i] + '\t' + str(w[keys[i]]) + '\n')
   filey.close()
-
+  # Raw Text
+  filey = open("/home/vanessa/Desktop/" + queryfeatures[wrd] + "_rawtext.txt",'w')
+  filey.writelines(raw_text[wrd])
+  filey.close()
 

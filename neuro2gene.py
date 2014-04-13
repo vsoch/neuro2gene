@@ -267,6 +267,10 @@ def getWordCounts(dataset,searchTerm,thresh,email):
     
     # Keep a dictionary with unique words and word counts
     worddict = dict()
+
+    # Also keep all of the raw text, if we want to do correct NLP
+    # (eg, remove stop words,stemming)
+    rawtext = ''
     for i in ids:
       # For each id, find the article by the isbm
       Entrez.email = email
@@ -279,11 +283,12 @@ def getWordCounts(dataset,searchTerm,thresh,email):
         handle = Entrez.efetch(db="pubmed", id=theid, rettype="gb", retmode="text")
         paper = handle.read()
         paper = paper.replace('\n',' ')
+        rawtext = rawtext + ' ' + paper
         words = paper.split(' ')
         # Get rid of empty spaces and make all lowercase
         words = [x.replace(' ','').lower() for x in words]
         # Get rid of silly characters
-        words = [x.strip('()|[].\',') for x in words if x]           
+        words = [x.strip('()|[].\'":,') for x in words if x]           
         # Get rid of empty words
         words = [x for x in words if x]
         print "Found " + str(len(words)) + " words for " + i
@@ -293,10 +298,11 @@ def getWordCounts(dataset,searchTerm,thresh,email):
             worddict[w] = worddict[w] + 1
           else:
             worddict[w] = 1        
-
+    
+    rawtext = rawtext.strip('()|[].\'":,').lower()
     # When we get here, we have a complete dictionary of words from the
     # abstracts, we can return the data to the user for further analysis
-    return worddict
+    return worddict,rawtext
 
 if __name__ == "__main__":
   print "Please import as a module"
