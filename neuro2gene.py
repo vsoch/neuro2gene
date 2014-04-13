@@ -13,6 +13,7 @@
 import numpy as np
 import json
 from neurosynth.base.dataset import Dataset
+from neurosynth.base.dataset import FeatureTable
 from neurosynth.base import imageutils
 from neurosynth.analysis import meta
 import nibabel as nb
@@ -22,6 +23,7 @@ import subprocess
 import os
 import matplotlib.pyplot as plt
 import pickle
+from Bio import Entrez
 
 # -- NEUROSYNTH FUNCTIONS --------------------------------------------------------------
 
@@ -244,5 +246,57 @@ def AllenQuery(keepers,searchTerm):
 
     print "Querying is complete! Results can be found in tables allen_brain_result." + searchTerm + "0..11 in Google Big Query."
           
+
+# -- PUBMED FUNCTIONS --------------------------------------------------------------
+# These functions will help to explore the papers that a term is derived from
+
+# Returns doi's for a search term at a particular threshold
+def getArticles(dataset,searchTerm,thresh):
+    # Get features
+    filename = 'data/525terms/features.txt'
+    feature_table = FeatureTable(dataset,filename)
+    ids = list(feature_table.get_ids(searchTerm, threshold=0.001))
+    return ids    
+
+# Returns word dictionary for a search term at a particular threshold
+def getWordCounts(dataset,searchTerm,thresh,email):
+
+    print "Getting pubmed articles for term " + searchTerm
+    thresh = float(thresh)
+    ids = getArticles(dataset,searchTerm,thresh)
+    
+    # Keep a dictionary with unique words and word counts
+    worddict = dict()
+    for i in ids:
+      # For each id, find the article by the isbm
+      Entrez.email = email
+      handle = Entrez.esearch(db='pubmed',term=i)
+      record = Entrez.read(handle)
+      # If we find the record
+      if "IdList" in record:
+        theid = record['IdList'][0]
+        # Now fetch the paper!
+        handle = Entrez.efetch(db="pubmed", id=theid, rettype="gb", retmode="text")
+        paper = handle.read()
+        paper = paper.replace('\n',' ')
+        words = paper.split(' ')
+        # Get rid of empty spaces and make all lowercase
+        words = [x.replace(' ','').lower() for x in words]
+        # Get rid of silly characters
+        words = [x.strip('()|[].\',') for x in words if x]           
+        # Get rid of empty words
+        words = [x for x in words if x]
+        print "Found " + str(len(words)) + " words for " + i
+        for w in words:
+          # If it's not in the dictionary, add it
+          if w in worddict:
+            worddict[w] = worddict[w] + 1
+          else:
+            worddict[w] = 1        
+
+    # When we get here, we have a complete dictionary of words from the
+    # abstracts, we can return the data to the user for further analysis
+    return worddict
+
 if __name__ == "__main__":
   print "Please import as a module"
