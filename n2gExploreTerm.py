@@ -1,6 +1,7 @@
 #!/bin/python
 
 # This script will explore the derivation of a particular feature
+# It uses neuro2gene module
 # We would want to be able to take a term map, and understand what the articles "were getting at" from which the term is derived.  We will use the neurosynth API to retrieve information about the articles, download them from Pubmed, read the full text, and create a document vector for each.  We will then cluster similar articles, and then visualize the similar articles with a word cloud (wordle!)
 
 # vsochat 4/12/2014
