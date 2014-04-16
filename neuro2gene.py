@@ -152,28 +152,6 @@ def loadABA():
     sids = np.unique(sids)
     return sids,xyz,colnames,aba
 
-# Get expression values for a list of probe ids
-# aba: Allen Brain Atlas IDs
-# datapath: folder with ME
-def getExpression(abaid,datapath):
-    print "Obtaining expression values for " + str(len(pids)) + "..."
-    # Read in the Microarray Expression Index Table
-    filey = open('data/MEindexTable.csv','r')
-    pid_idx = dict()
-    idx = filey.readlines()
-    # Save dictionary to lookup table from MEid
-    for i in idx:
-      tmp = i.strip('\n').split(',')
-      pid_idx[tmp[0]] = tmp[1]
-    # Now look up expression for each gene
-    for a in abaid:
-      tabley = pid_idx[a]
-      tmp = open(datapath + "/" + tabley + "/csv")
-      my_data = genfromtxt('my_file.csv', delimiter=',')
-      /home/vanessa/Documents/Work/ALLEN/R
-
-     
-
 # Get list of probe IDS from a set of input genes
 # Returns aba_pids, Affy Probes, Gene Ids
 def lookup(genes):
