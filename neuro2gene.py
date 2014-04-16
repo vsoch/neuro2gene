@@ -151,7 +151,68 @@ def loadABA():
     # Find the number of unique specimens
     sids = np.unique(sids)
     return sids,xyz,colnames,aba
+
+# Get expression values for a list of probe ids
+# aba: Allen Brain Atlas IDs
+# datapath: folder with ME
+def getExpression(abaid,datapath):
+    print "Obtaining expression values for " + str(len(pids)) + "..."
+    # Read in the Microarray Expression Index Table
+    filey = open('data/MEindexTable.csv','r')
+    pid_idx = dict()
+    idx = filey.readlines()
+    # Save dictionary to lookup table from MEid
+    for i in idx:
+      tmp = i.strip('\n').split(',')
+      pid_idx[tmp[0]] = tmp[1]
+    # Now look up expression for each gene
+    for a in abaid:
+      tabley = pid_idx[a]
+      tmp = open(datapath + "/" + tabley + "/csv")
+      my_data = genfromtxt('my_file.csv', delimiter=',')
+      /home/vanessa/Documents/Work/ALLEN/R
+
+     
+
+# Get list of probe IDS from a set of input genes
+# Returns aba_pids, Affy Probes, Gene Ids
+def lookup(genes):
+    # Load the probes data file
+    filey = open('data/Probes.tab','r')
+    probes = filey.readlines()
     
+    # First let's create gene lookup tables
+    pid_lookup = dict() # Probe ID (Affymetrix)
+    aba_lookup = dict() # Allen Brain Atlas ID
+    for p in range(0,len(probes)):
+      gname = probes[p].split('\t')[3]
+      if gname in dict():
+        # Make sure all genes are uppercase
+        holder = pid_lookup[gname]
+        holder.append(probes[p].split('\t')[1]).upper()
+        pid_lookup[gname] = holder
+        holder = aba_lookup[gname]
+        holder.append(probes[p].split('\t')[0])
+        aba_lookup[gname] = holder
+      else:
+        pid_lookup[gname] = probes[p].split('\t')[1].upper()
+        aba_lookup[gname] = probes[p].split('\t')[0]
+
+    # Now, for each gene, get the pids
+    pids = []    # Affymetrix ids
+    notfound = []# Not found gene names
+    found = []   # Found gene names
+    abaid = []   # allen brain atlas ID
+    for g in genes:
+      if g.upper() in pid_lookup:
+        pids.append(pid_lookup[g])
+        found.append(g)
+        abaid.append(aba_lookup[g])
+      else:
+        print "Cannot find gene " + g + " in Allen Brain Atlas"
+        notfound.append(g)
+    print "Did not find " + str(len(notfound)) + " genes"
+    return abaid,pids,found
 
 def ReadAllenBrainSample(coords,sids=None,xyz=None,colnames=None,aba=None):
 
