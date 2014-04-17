@@ -2,8 +2,6 @@
 
 indir = "/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/thresh/9mmsq3000"
 files = list.files(path = indir, pattern = "*.tab")
-#uids = read.csv('/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/labels/featureUID.txt',sep=',',head=FALSE)
-suids = read.csv('/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/labels/sampleUID.txt',sep=',',head=FALSE)
 thresh = 0.05
 b = 1000 # Number bootstrap samples
 outdir = "/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/probeSets/9mmsq3000/"
