@@ -1,26 +1,16 @@
-#!/usr/bin/python
-
 import neuro2gene
+thresh = 0.001
+import os.path
 
-# First query neurosynth for relevant activation
+# Read in features from dataset
 dataset = neuro2gene.neurosynthInit()
-# Get the feature names
 features = neuro2gene.getFeatures(dataset)
 
-# OPTION 1
-# Just create similarity matrix without images
-sims = neuro2gene.getSimilarity(features,THRESHOLD,dataset,outdir)
-
-# OPTION 2 make images
-# Set the output directory for images
-outdir = '/home/vanessa/Documents/Work/ATLAS/NEUROSYNTH'
-
-# For each feature, create spatial map
+count = 1
 for f in features:
-  SEARCH_TERM = f
-  THRESHOLD = 0.001
-  # Return MNI coordinates where there is FDR corrected, significant activation
-  coords = neuro2gene.neurosynthQuery(SEARCH_TERM,THRESHOLD,dataset,outdir)
-  
+   fname = "/scratch/users/vsochat/DATA/BRAINMAP/nsynth525/" + f + ".nii.gz"
+   if not os.path.isfile(fname):
+     print "Processing " + str(count) + " of " + str(len(features)) + " : " + f
+     tmp = neuro2gene.neurosynthQuery(f,thresh,dataset,outdir="/scratch/users/vsochat/DATA/BRAINMAP/nsynth525/")
+     count = count + 1
 
-# Now we need to run analysis for all the terms!
