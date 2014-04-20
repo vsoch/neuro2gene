@@ -46,3 +46,4 @@ for (f in 1:length(files)) {
   write.table(savepoints, file = paste("/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/thresh/9mmsq3000/",termid,".tab",sep=""), append = FALSE, quote = TRUE, sep = "\t",eol = "\n", na = "NA", dec = ".", row.names = TRUE, col.names = TRUE)  
 }
 
+

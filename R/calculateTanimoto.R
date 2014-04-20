@@ -1,4 +1,4 @@
-# This will read in each of shapley up and down sets, and calculate tanimoto scores.
+#This will read in each of shapley up and down sets, and calculate tanimoto scores.
 
 indir = '/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/probeSets/9mmsq525/list'
 downs = list.files(indir,pattern="*_down.Rda")
@@ -132,3 +132,4 @@ rownames(usize) = ups
 write.table(asize,file="/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/tanimoto/all_sizes_525.csv",quote=FALSE)
 write.table(usize,file="/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/tanimoto/up_sizes_525.csv",quote=FALSE)
 write.table(dsize,file="/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/tanimoto/down_sizes_525.csv",quote=FALSE)
+
