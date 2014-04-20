@@ -7,10 +7,11 @@ outfile = paste("/scratch/users/vsochat/DATA/GENE_EXPRESSION/gsea/database/brain
 # Read in file with probes
 probes = read.csv("/scratch/users/vsochat/DATA/ALLEN/Probes.csv",sep=",",header=FALSE)
 
-listdir = "/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/probeSets/9mmsq3000/list"
+listdir = "/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/probeSets/9mmsq3000/list/"
 
 # TO DO - create text file with list of 3000 terms
-terms = read.csv("/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/labels/features3000.txt")
+terms = read.csv("/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/labels/features3000.txt",head=FALSE)
+terms = terms$V1
 
 # UP PROBES
 sink(outfile)
@@ -35,7 +36,7 @@ for (t in 1:length(terms)) {
     cat(label,"Allen Brain Atlas expression up regulated subset for neurosynth fdr .05 corrected brain map sorted by pval more sig first",as.character(genes),"\n",sep="\t") 
     rm(resultup)
   }
-  if (file.exists(paste("/home/vanessa/Documents/Work/GENE_EXPRESSION/neurosynth/probeSets/9mmsq/list/",tid,"_",term,"_probeSet_down.Rda",sep=""))) {
+  if (file.exists(paste(listdir,term,"_probeSet_down.Rda",sep=""))) {
 
     # Load the down set
     load(file=paste(listdir,term,"_probeSet_down.Rda",sep=""))
