@@ -2,23 +2,27 @@
 # Read in file with gene_id lookup - we need to overlap genes in allen brain atlas with this data
 
 # Write to this file
-outfile = paste("/home/vanessa/Documents/Dropbox/Code/R/GSEA-P-R/GeneSetDatabases/brainTerms3000.gmt",sep="")
+outfile = paste("/scratch/users/vsochat/DATA/GENE_EXPRESSION/gsea/database/brainTerms3000.gmt",sep="")
 
 # Read in file with probes
-probes = read.csv("/home/vanessa/Documents/Work/ALLEN/Probes.csv",sep=",",header=FALSE)
+probes = read.csv("/scratch/users/vsochat/DATA/ALLEN/Probes.csv",sep=",",header=FALSE)
+
+listdir = "/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/probeSets/9mmsq3000/list"
+
+# TO DO - create text file with list of 3000 terms
+terms = read.csv("/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/labels/features3000.txt")
 
 # UP PROBES
 sink(outfile)
 for (t in 1:length(terms)) {
   term = terms[t]
-  tid = uids[t,1]
     
-  if (file.exists(paste("/home/vanessa/Documents/Work/GENE_EXPRESSION/neurosynth/probeSets/9mmsq/list/",tid,"_",term,"_probeSet_up.Rda",sep=""))) {
+  if (file.exists(paste(listdir,term,"_probeSet_up.Rda",sep=""))) {
     
     ptmp = probes
     
     # Load the up set
-    load(file=paste("/home/vanessa/Documents/Work/GENE_EXPRESSION/neurosynth/probeSets/9mmsq/list/",tid,"_",term,"_probeSet_up.Rda",sep=""))
+    load(file=paste(listdir,term,"_probeSet_up.Rda",sep=""))
     # Sort by pvalue significance
     resultup$pval = as.numeric(as.character(resultup$pval))
     resultup = resultup[with(resultup, order(pval)),]
@@ -34,7 +38,7 @@ for (t in 1:length(terms)) {
   if (file.exists(paste("/home/vanessa/Documents/Work/GENE_EXPRESSION/neurosynth/probeSets/9mmsq/list/",tid,"_",term,"_probeSet_down.Rda",sep=""))) {
 
     # Load the down set
-    load(file=paste("/home/vanessa/Documents/Work/GENE_EXPRESSION/neurosynth/probeSets/9mmsq/list/",tid,"_",term,"_probeSet_down.Rda",sep=""))
+    load(file=paste(listdir,term,"_probeSet_down.Rda",sep=""))
     ptmp = probes
     # Sort by pvalue significance
     resultdown$pval = as.numeric(as.character(resultdown$pval))
