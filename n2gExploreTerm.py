@@ -13,6 +13,7 @@ THRESHOLD = 0.001
 # Read in features from dataset
 dataset = neuro2gene.neurosynthInit()
 queryfeatures = ['angry','noun','skills','covert']
+queryfeatures = ['poorer','depicting','pulse']
 features = neuro2gene.getFeatures(dataset)
 email = 'vsochat@stanford.edu'
 

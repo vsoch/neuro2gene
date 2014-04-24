@@ -292,7 +292,7 @@ def AllenQuery(keepers,searchTerm):
 # Returns doi's for a search term at a particular threshold
 def getArticles(dataset,searchTerm,thresh):
     # Get features
-    filename = 'data/525terms/features.txt'
+    filename = 'data/3000terms/features.txt'
     feature_table = FeatureTable(dataset,filename)
     ids = list(feature_table.get_ids(searchTerm, threshold=0.001))
     return ids    
