@@ -3,7 +3,7 @@ thresh = 0.001
 import os.path
 
 # Read in features from dataset
-dataset = neuro2gene.neurosynthInit()
+dataset = neuro2gene.neurosynthInit('525')
 features = neuro2gene.getFeatures(dataset)
 
 count = 1

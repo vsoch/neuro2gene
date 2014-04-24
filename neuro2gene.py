@@ -27,10 +27,10 @@ from Bio import Entrez
 
 # -- NEUROSYNTH FUNCTIONS --------------------------------------------------------------
 
-def neurosynthInit():
+def neurosynthInit(dbsize):
     print "Initializing Neurosynth database..."
-    dataset = Dataset('data/3000terms/database.txt')
-    dataset.add_features('data/3000terms/features.txt')    
+    dataset = Dataset('data/' + dbsize + 'terms/database.txt')
+    dataset.add_features('data/' + dbsize + 'terms/features.txt')    
 
     #print "Loading standard space brain..."
     #img = nb.load("data/MNI152_T1_2mm_brain.nii.gz")
