@@ -11,7 +11,7 @@ import os
 THRESHOLD = 0.001
 
 # Read in features from dataset
-dataset = neuro2gene.neurosynthInit()
+dataset = neuro2gene.neurosynthInit('525')
 queryfeatures = ['angry','noun','skills','covert'] # ASD, N=525
 queryfeatures = ['poorer','depicting','pulse'] # ASD, N=3000
 queryfeatures = ["fearful","reversal"] # SCHIZO, N=525
