@@ -96,6 +96,8 @@ def getSimilarity(features,thresh,dataset,outdir=None):
     #np.loadtxt('featureSimMatrix.dat', comments='#', delimiter=',')
     return sims
  
+# -- VISUALIZATION FUNCTIONS --------------------------------------------------------------
+# TO DO
 
 # -- ALLEN BRAIN ATLAS FUNCTIONS -----------------------------------------------------------
 

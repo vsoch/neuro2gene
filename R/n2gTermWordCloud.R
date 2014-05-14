@@ -7,7 +7,7 @@ library('tm')
 library('wordcloud')
 
 # Read in raw data files - make sure your raw text file is in this folder
-rawtext = '/home/vanessa/Documents/Work/GENE_EXPRESSION/neurosynth/results/sigresults/nlp'
+rawtext = '/home/vanessa/Documents/Work/GENE_EXPRESSION/nextbio/SCHIZO/gsea_report/nlp'
 
 # Create a document "corpus" (we only have one document)
 corpy = Corpus(DirSource(rawtext),readerControl = list(language="en"))
