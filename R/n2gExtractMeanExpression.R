@@ -6,6 +6,9 @@
 # term 2
 # term 3
 
+
+# SECTION 1: Extract mean expression for ONLY core genes in each set:
+
 # We will then use this matrix to calculate correlations between expression... does that make sense?
 datadir = "/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/probeSets/9mmsq525/data"
 
@@ -24,7 +27,7 @@ for (f in 1:length(files)){
 }
 genenames = unique(genenames)
 
-# STOPPED HERE - need to make this a data frame, and take mean over genes
+# Output matrices
 matrixMeans = array(data=0,dim=c(length(files),length(genenames)))
 matrixSums = array(data=0,dim=c(length(files),length(genenames)))
 ngenes = c()
@@ -75,3 +78,62 @@ write.table(nsamps, file = paste("/scratch/users/vsochat/DATA/GENE_EXPRESSION/ne
 # Now calculate correlations for matrixMeans
 corMeans = cor(matrixMeans,method="pearson")
 write.table(corMeans, file = paste("/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/sigresult/geneMeansCorrMatrix_n4.csv"), append = FALSE, quote = FALSE, row.names = TRUE, col.names = TRUE)
+
+
+# SECTION 2: Extract mean expression for ALL genes in each subset - these are
+# all core enrichment genes for subsets angry, color, audiovisual, noun, and 
+GENES = read.csv('/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/sigresult/brainterm6GenesExpression.txt',head=TRUE,sep="\t")
+
+# Now we need to know the sample locations assigned to each map, and extract mean expression for those sample locations.
+# This must be run on sherlock cluster where data is!
+
+# First read in me tables
+me = list.files(path = "/scratch/users/vsochat/DATA/ALLEN/me/", pattern = "*_id.csv")
+
+# These are the files with sample locations
+indir = "/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/thresh/9mmsq525"
+files = c("TRM397_angry.tab","TRM261_noun.tab","TRM043_colors.tab","TRM086_audiovisual.tab","TRM123_rejection.tab")
+
+# We will make a matrix of genes by expression
+data = matrx(nrow=dim(GENES)[1],ncol=length(files))
+rownames(data) = GENES$ABA_ID
+colnames(data) = files
+
+# Generate column names (combining the files)
+colly = list()
+# Read in colnames for each me file
+for (p in 1:length(me)){
+  tmp = read.csv(paste('/scratch/users/vsochat/DATA/ALLEN/me/',me[p],sep=""),sep=',',head=TRUE,nrows=1)
+  tmp = list(colnames(tmp))
+  colly = c(colly,tmp)
+}  
+
+# STOPPED HERE - NEED TO WRITE CODE TO EXTRACT MEAN EXPRESSION FOR EACH SAMPLE
+
+for (file in files){
+  # For our term, read in file, get gene expression for each sample
+  file = read.csv(paste(indir,"/",file,sep=""),sep='\t',head=TRUE)
+  probes = c()
+  sampy = as.numeric(gsub("SAMP","",rownames(file[,])))  
+  # Get gene expression from each me file (0-11)             
+  for (p in 1:length(me)){
+    tmp = read.csv(paste('/scratch/users/vsochat/DATA/ALLEN/me/',me[p],sep=""),sep=',',head=TRUE)
+    colnames(tmp) = colly[[p]]
+    rn = rownames(file)
+    # Subset to the samples for the term
+    tmp = tmp[sampy,16:dim(tmp)[2]]
+    tmp =sapply(tmp,as.numeric)
+    probes = cbind(probes,tmp)
+  }
+  rownames(probes) = rn
+
+CNT=c()
+for (t in 1:length(files)) {
+  # Get the results
+  file = files[t]
+  #term = strsplit(file,"_")
+  #term = term[[1]][2]
+  term = gsub(".txt",".tab",file)
+  cat ("Processing",term,"\n")
+  # Arbitrary - select top .9 of weighted probes - how to determine thresh?
+  file = read.csv(paste(indir,"/",term,sep=""),head=TRUE,sep="\t")

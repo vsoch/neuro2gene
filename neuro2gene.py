@@ -163,7 +163,7 @@ def lookup(genes):
     pid_lookup = dict() # Probe ID (Affymetrix)
     aba_lookup = dict() # Allen Brain Atlas ID
     for p in range(0,len(probes)):
-      gname = probes[p].split('\t')[3]
+      gname = probes[p].split('\t')[3].upper()
       if gname in dict():
         # Make sure all genes are uppercase
         holder = pid_lookup[gname]
@@ -174,7 +174,7 @@ def lookup(genes):
         aba_lookup[gname] = holder
       else:
         pid_lookup[gname] = probes[p].split('\t')[1].upper()
-        aba_lookup[gname] = probes[p].split('\t')[0]
+        aba_lookup[gname] = probes[p].split('\t')[0].upper()
 
     # Now, for each gene, get the pids
     pids = []    # Affymetrix ids
@@ -183,9 +183,9 @@ def lookup(genes):
     abaid = []   # allen brain atlas ID
     for g in genes:
       if g.upper() in pid_lookup:
-        pids.append(pid_lookup[g])
+        pids.append(pid_lookup[g.upper()])
         found.append(g)
-        abaid.append(aba_lookup[g])
+        abaid.append(aba_lookup[g.upper()])
       else:
         print "Cannot find gene " + g + " in Allen Brain Atlas"
         notfound.append(g)
