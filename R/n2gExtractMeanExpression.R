@@ -95,7 +95,7 @@ indir = "/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/thresh/9mmsq525"
 files = c("TRM397_angry.tab","TRM261_noun.tab","TRM043_colors.tab","TRM086_audiovisual.tab","TRM123_rejection.tab")
 
 # We will make a matrix of genes by expression
-data = matrx(nrow=dim(GENES)[1],ncol=length(files))
+data = matrix(nrow=dim(GENES)[1],ncol=length(files))
 rownames(data) = GENES$ABA_ID
 colnames(data) = files
 
@@ -108,24 +108,42 @@ for (p in 1:length(me)){
   colly = c(colly,tmp)
 }  
 
-# STOPPED HERE - NEED TO WRITE CODE TO EXTRACT MEAN EXPRESSION FOR EACH SAMPLE
+# Extract expression matrix
+probes = c()
+# Get gene expression from each me file (0-11)             
+for (p in 1:length(me)){
+  cat("Processing",p,"\n")
+  tmp = read.csv(paste('/scratch/users/vsochat/DATA/ALLEN/me/',me[p],sep=""),sep=',',head=TRUE)
+  colnames(tmp) = colly[[p]]
+  tmp =sapply(tmp,as.numeric)
+  probes = cbind(probes,tmp)
+}
+save(probes,file=paste("/scratch/users/vsochat/DATA/ALLEN/probesExpressionAll.Rda",sep=""))
+load(paste("/scratch/users/vsochat/DATA/ALLEN/probesExpressionAll.Rda",sep=""))
+rownames(probes) = probes[,1]
+pids = gsub("pid","",GENES$ABA_ID)
 
-for (file in files){
+library('preprocessCore')
+probesnorm = normalize.quantiles(probes,copy=TRUE)
+
+# For each file, extract mean expression into matrix
+for (f in files){
   # For our term, read in file, get gene expression for each sample
-  file = read.csv(paste(indir,"/",file,sep=""),sep='\t',head=TRUE)
-  probes = c()
+  file = read.csv(paste(indir,"/",f,sep=""),sep='\t',head=TRUE)
   sampy = as.numeric(gsub("SAMP","",rownames(file[,])))  
-  # Get gene expression from each me file (0-11)             
-  for (p in 1:length(me)){
-    tmp = read.csv(paste('/scratch/users/vsochat/DATA/ALLEN/me/',me[p],sep=""),sep=',',head=TRUE)
-    colnames(tmp) = colly[[p]]
-    rn = rownames(file)
-    # Subset to the samples for the term
-    tmp = tmp[sampy,16:dim(tmp)[2]]
-    tmp =sapply(tmp,as.numeric)
-    probes = cbind(probes,tmp)
-  }
-  rownames(probes) = rn
+  # Get mean probe expression over map sample points
+  meanExpression = colMeans(probes[sampy,])
+  # Now filter down to our genes
+  names(meanExpression) = gsub("pid_","",names(meanExpression))
+  meanExpression = meanExpression[which(as.character(GENES$ABA_ID) %in% names(meanExpression))]
+  # The sample numbers are equivalent to the index
+  data[,f] = meanExpression
+}
+
+# Save to file
+result = list(meanExpression=data,rows=GENES,cols=files)
+save(result,file=paste("/scratch/users/vsochat/DATA/ALLEN/meanExpression-5-143.Rda",sep=""))
+
 
 CNT=c()
 for (t in 1:length(files)) {
