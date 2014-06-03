@@ -25,7 +25,7 @@ neuro2gene.printSampleMatches(keepers,SEARCH_TERM,analysisTime,colnames)
 
 # HERE IS RUNNING FOR ALL TERMS
 import neuro2gene
-dataset = neuro2gene.neurosynthInit()
+dataset = neuro2gene.neurosynthInit('525')
 features = neuro2gene.getFeatures(dataset)
 THRESHOLD = 0.05
 sids,xyz,colnames,aba = neuro2gene.loadABA()

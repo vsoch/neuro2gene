@@ -69,11 +69,11 @@ def getFeatures(dataset):
 def getSimilarity(features,thresh,dataset,outdir=None):
 
     # Here we hold our distance scores, smaller = more similar
-    sims = nu.zeros(shape=(len(features),len(features)))
+    sims = np.zeros(shape=(len(features),len(features)))
 
     for i in range(1,len(features)):
-      print "Starting feature #: " + str(i) + "/" + str(len(features)) + " " + f1
       f1 = features[i]
+      print "Starting feature #: " + str(i) + "/" + str(len(features)) + " " + f1
       query = dataset.get_ids_by_features('*' + f1 + '*',threshold=thresh)
       ma = meta.MetaAnalysis(dataset,query)
       # Absolute value for FDR corrected at threshold
