@@ -20,12 +20,15 @@ lookup = as.list(org.Hs.egALIAS2EG)
 # Remove pathway identifiers that do not map to any entrez gene id
 lookup = lookup[!is.na(lookup)]
 
+disorderaids = list()
 for (i in 1:length(disorders)){
   dis = disorders[i]
-  gen = as.character(genes$PROBE[which(genes$DISORDER == dis)])
+  cat("Processing",dis,"\n")
+  gen = as.character(unique(genes$PROBE[which(genes$DISORDER == dis)]))
   # This list will hold aids for each gene
   aidlist = list()
   for (g in 1:length(gen)){
+    cat("Processing",g,"of",length(gen),"\n")
     # get number
     querygene = as.character(gen[g])    
     geneid = lookup[[querygene]]
@@ -33,12 +36,55 @@ for (i in 1:length(disorders)){
     query = paste("https://pubchem.ncbi.nlm.nih.gov/rest/pug/assay/target/genesymbol/",querygene,"/aids/TXT",sep="")
     result = getURL(query)
     aids = strsplit(result,"\n")[[1]]
-    aidlist[[geneid]] = aids
-    # We will be looking up these results in our data on sherlock
+    for (k in geneid){
+      aidlist[[k]] = aids
+    }
   }
+  disorderaids[[dis]] = aidlist
 }
 
-# Run this on Sherlock
-4) in data file - find the gene, if active, save SID for it!
-  query = paste("http://www.ncbi.nlm.nih.gov/gene/?term=",querygene,sep="")
-# This will get assay ids
+# Save object with AIDS
+save(disorderaids,file="/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/sigresult/disorderGeneAssayLists8.Rda")
+
+# Now we should look up each of the SIDS, and find the SIDS for which the gene is active
+bioassayFolder = "/scratch/PI/dpwall/DATA/PUBCHEM/bioassay"
+subfolders = list.files(bioassayFolder,pattern="^[0-9]{7}_[0-9]{7}$")
+# Convert to ranges
+starts = c()
+for (s in 1:length(subfolders)){
+   folder = subfolders[s]
+   start = as.numeric(strsplit(folder,"_")[[1]][1])
+   end = as.numeric(strsplit(folder,"_")[[1]][2])
+   starts = c(starts,start)
+}
+names(starts) = subfolders
+
+# Save to file for later!
+save(starts,file="pubChemfolderStartIndex.Rda")
+
+# Now for each of our disorderaids, read in the files, save active sid info
+disordersids = list()
+for (b in 1:length(disorderaids)){
+   sids = c()
+   dis = names(disorderaids[b])
+   cat("Starting",dis,":",b,"of",length(disorderaids),"\n")
+   genetocheck = disorderaids[[b]]
+   for (a in 1:length(genetocheck)){
+     geneid = names(genetocheck)[a]
+     aids = genetocheck[[a]]
+     for (c in 1:length(aids)){
+     # Find the file to lookup the aid
+       aid = as.numeric(aids[c])
+       # Get the index for the right folder
+       idx = as.numeric(which(starts<=aid)[length(which(starts<=aid))])
+       folder = names(starts)[idx]
+       # Read in file
+       filey = paste(bioassayFolder,"/",folder,"/",aid,".csv.gz",sep="")
+       filey = read.csv(filey,head=TRUE,sep=",")
+       idx = which(colnames(filey)=="X3.Gene.Target.ID.STRING....gene.target.id")
+       idx = which(as.character(filey[,idx])==geneid)
+       sids = rbind(sids,filey[idx,])
+     }
+   }
+   disordersids[[dis]] = sids
+}
