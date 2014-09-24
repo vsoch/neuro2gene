@@ -88,3 +88,6 @@ for (b in 1:length(disorderaids)){
    }
    disordersids[[dis]] = sids
 }
+
+# Save list of sids to file to parse
+save(disordersids,file="/scratch/users/vsochat/DATA/GENE_EXPRESSION/neurosynth/sigresult/disorderSIDSPubchem.Rda")
