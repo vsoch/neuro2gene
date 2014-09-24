@@ -7,7 +7,7 @@ library('tm')
 library('wordcloud')
 
 # Read in raw data files - make sure your raw text file is in this folder
-rawtext = '/home/vanessa/Documents/Work/GENE_EXPRESSION/nextbio/SCHIZO/gsea_report/nlp'
+rawtext = '/home/vanessa/Desktop/nlp'
 
 # Create a document "corpus" (we only have one document)
 corpy = Corpus(DirSource(rawtext),readerControl = list(language="en"))
@@ -23,6 +23,9 @@ corpy = tm_map(corpy, removeWords, stopwords("english"))
 corpy = tm_map(corpy, removePunctuation)
 # Word stemming
 corpy = tm_map(corpy, stemDocument)
+# Remove pubmed relevant terms
+corpy = tm_map(corpy, removeWords, c("activ","pmid","doi","pubm","author","epub"))
+
 
 # MAKE WORDCLOUD!
 wordcloud(corpy, scale=c(5,0.5), max.words=100, random.order=FALSE, rot.per=0.35, use.r.layout=FALSE, colors=brewer.pal(8,"Dark2"))

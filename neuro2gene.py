@@ -42,6 +42,8 @@ def neurosynthQuery(searchTerm,thresh,dataset,outdir=None):
     query = dataset.get_ids_by_features('*' + searchTerm + '*',threshold=thresh)
     ma = meta.MetaAnalysis(dataset,query)
     # This gets the absolute value FDR corrected at threshold
+    # 'pAgF_z_FDR_0.05'
+    # the z score map corresponding to the map of the probability of activation given that a study is tagged with the feature, FDR corrected .05
     data = ma.images[ma.images.keys()[4]]
     # Print this image to file, to look at later
     if outdir:
@@ -290,19 +292,19 @@ def AllenQuery(keepers,searchTerm):
 # These functions will help to explore the papers that a term is derived from
 
 # Returns doi's for a search term at a particular threshold
-def getArticles(dataset,searchTerm,thresh):
+def getArticles(dataset,searchTerm,thresh,num):
     # Get features
-    filename = 'data/3000terms/features.txt'
+    filename = 'data/' + str(num) + 'terms/features.txt'
     feature_table = FeatureTable(dataset,filename)
-    ids = list(feature_table.get_ids(searchTerm, threshold=0.001))
+    ids = list(feature_table.get_ids(searchTerm, threshold=thresh))
     return ids    
 
 # Returns word dictionary for a search term at a particular threshold
-def getWordCounts(dataset,searchTerm,thresh,email):
+def getWordCounts(dataset,searchTerm,thresh,email,num):
 
     print "Getting pubmed articles for term " + searchTerm
     thresh = float(thresh)
-    ids = getArticles(dataset,searchTerm,thresh)
+    ids = getArticles(dataset,searchTerm,thresh,num)
     
     # Keep a dictionary with unique words and word counts
     worddict = dict()
@@ -317,27 +319,28 @@ def getWordCounts(dataset,searchTerm,thresh,email):
       record = Entrez.read(handle)
       # If we find the record
       if "IdList" in record:
-        theid = record['IdList'][0]
-        # Now fetch the paper!
-        handle = Entrez.efetch(db="pubmed", id=theid, rettype="gb", retmode="text")
-        paper = handle.read()
-        paper = paper.replace('\n',' ')
-        rawtext = rawtext + ' ' + paper
-        words = paper.split(' ')
-        # Get rid of empty spaces and make all lowercase
-        words = [x.replace(' ','').lower() for x in words]
-        # Get rid of silly characters
-        words = [x.strip('()|[].\'":,') for x in words if x]           
-        # Get rid of empty words
-        words = [x for x in words if x]
-        print "Found " + str(len(words)) + " words for " + i
-        for w in words:
-          # If it's not in the dictionary, add it
-          if w in worddict:
-            worddict[w] = worddict[w] + 1
-          else:
-            worddict[w] = 1        
-    
+        if record["Count"] != "0":
+          theid = record['IdList'][0]
+          # Now fetch the paper!
+          handle = Entrez.efetch(db="pubmed", id=theid, rettype="gb", retmode="text")
+          paper = handle.read()
+          paper = paper.replace('\n',' ')
+          rawtext = rawtext + ' ' + paper
+          words = paper.split(' ')
+          # Get rid of empty spaces and make all lowercase
+          words = [x.replace(' ','').lower() for x in words]
+          # Get rid of silly characters
+          words = [x.strip('()|[].\'":,') for x in words if x]           
+          # Get rid of empty words
+          words = [x for x in words if x]
+          print "Found " + str(len(words)) + " words for " + i
+          for w in words:
+            # If it's not in the dictionary, add it
+            if w in worddict:
+              worddict[w] = worddict[w] + 1
+            else:
+              worddict[w] = 1        
+
     rawtext = rawtext.strip('()|[].\'":,').lower()
     # When we get here, we have a complete dictionary of words from the
     # abstracts, we can return the data to the user for further analysis

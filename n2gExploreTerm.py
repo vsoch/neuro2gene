@@ -11,10 +11,14 @@ import os
 THRESHOLD = 0.001
 
 # Read in features from dataset
+# THESE ARE OLD RESULTS
 dataset = neuro2gene.neurosynthInit('525')
 queryfeatures = ['angry','noun','skills','covert'] # ASD, N=525
 queryfeatures = ['poorer','depicting','pulse'] # ASD, N=3000
 queryfeatures = ["fearful","reversal"] # SCHIZO, N=525
+
+# THESE ARE NEW RESULTS
+queryfeatures = ["1back","rule","automatic","bimodal","colour","digits","goal","longterm","orienting","oscillations","pitch","planning","reading","visually","mood","vision","violation"]
 features = neuro2gene.getFeatures(dataset)
 email = 'vsochat@stanford.edu'
 
@@ -22,12 +26,14 @@ email = 'vsochat@stanford.edu'
 if len([e for e in queryfeatures if e in '\n'.join(features)]) != len(queryfeatures):
   print "Error: Please check that query features are in feature list!"
 
+# This is the database we want to query, the one with 525 terms
+number = "525"
 word_dicts = list()
 raw_text = list()
 
 # For each feature, get the articles
 for f in queryfeatures:
-  wd,rt = neuro2gene.getWordCounts(dataset,f,THRESHOLD,email) 
+  wd,rt = neuro2gene.getWordCounts(dataset,f,THRESHOLD,email,number) 
   word_dicts.append(wd)
   raw_text.append(rt)
 
